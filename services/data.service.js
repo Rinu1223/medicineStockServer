@@ -67,15 +67,17 @@ const signUp=(uname,email,password)=>{
              }
            }
            else{
-               
-               user.stockDetails.push({Medicine:Medicine,Quantity:Quantity,Price:Price})
-               user.save();
-            return {
-               statusCode:200,
-               status:false,
-               message:`Stock added successfully.... `
-           }
-           }
+              
+                user.stockDetails.push({Medicine:Medicine,Quantity:Quantity,Price:Price})
+                user.save();
+                return {
+                statusCode:200,
+                status:false,
+                message:`Stock added successfully.... `
+            }
+               }
+             
+           
           })
           }
           const displayStock=(req,email)=>{
@@ -102,10 +104,64 @@ const signUp=(uname,email,password)=>{
             })
             }
 
+            const deleteMedicine=(email,index)=>{
+                //return db.User.updateOne({"email":email},{$pull:{stockDetails:{Medicine:Medicine}}})
+                return db.User.findOne({email})
+                     .then(result=>{
+                    if(!result){
+                        return {
+                          statusCode:422,
+                          status:false,
+                          message:"Failed to delete"
+                      }
+                    }
+                    else{
+                        result.stockDetails.splice(index,1)
+                        result.markModified('stockDetails');
+                        result.save();
+                     return {
+                        statusCode:200,
+                        status:true,
+                        message:"deleted one row"
+                    }
+                    }
+                   })
+              }
+
+              const updateStock=(email,indexNum,Medicine,Quantity,Price)=>{
+                let index=parseInt(indexNum)
+                return  db.User.findOne({email})
+                           .then(user=>{
+                          if(!user){
+                              return {
+                                statusCode:422,
+                                status:false,
+                                message:"Failed to update"
+                            }
+                          }
+                          else{
+                               user.stockDetails[index].Medicine=Medicine;
+                               user.stockDetails[index].Quantity=Quantity;
+                               user.stockDetails[index].Price=Price;
+                               user.markModified('stockDetails');
+                               user.save();
+                          return {
+                              statusCode:200,
+                              status:true,
+                              message:"updated ...."
+                          }
+                          }
+                         })
+                    
+                        }
+                     
+
   module.exports={
     signUp,
     login,
     addStock,
-    displayStock
+    displayStock,
+    deleteMedicine,
+    updateStock
 
   }

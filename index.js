@@ -43,3 +43,16 @@ app.post('/login',(req,res)=>{
       res.status(result.statusCode).json(result)
     })
 });
+app.post('/deleteMedicine',(req,res)=>{
+    dataservice.deleteMedicine(req.body.email,req.body.index)
+  .then(result=>{
+  res.status(result.statusCode).json(result)
+  })
+  });
+  app.post('/updateStock',(req,res)=>{
+    //console.log(req);
+    dataservice.updateStock(req.body.email,req.body.indexNum,req.body.Medicine,req.body.Quantity,req.body.Price)
+  .then(result=>{
+  res.status(result.statusCode).json(result)
+  })
+  });
